@@ -24,16 +24,30 @@ export class HomeComponent implements OnInit{
   private initMap(): void {
     this.map = L.map('map', {
       center: [ this.latitude, this.longitude ],
-      zoom: 10
+      zoom: 17
     });
 
-    const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    const tiles = L.tileLayer('https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=CvdEZHq6ELwg1lnvJJ58', {
       maxZoom: 18,
       minZoom: 3,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     });
 
     tiles.addTo(this.map);
+
+    // var osm = L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"),
+    //     mqi = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.png", {subdomains: ['otile1','otile2','otile3','otile4']});
+
+    // var baseMaps = {
+    //     "OpenStreetMap": osm,
+    //     "MapQuestImagery": mqi
+    // };
+
+    // var overlays =  {//add any overlays here
+    
+    //     };
+    
+    // L.control.layers(baseMaps,overlays, {position: 'bottomleft'}).addTo(this.map);
 
     var marker = L.marker([this.latitude, this.longitude], {icon: this.myIcon}).addTo(this.map);
   }

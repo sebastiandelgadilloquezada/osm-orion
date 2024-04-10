@@ -33,6 +33,11 @@ export const routes: Routes = [
                   import('./pages/profile/profile.component').then((m) => m.ProfileComponent),
             },
             {
+                path: 'activity',
+                loadComponent: () =>
+                  import('./pages/activity/activity.component').then( (m) => m.ActivityComponent)
+            },
+            {
                 path: '**',
                 redirectTo: 'notFound',
                 pathMatch: 'full',
