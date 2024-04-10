@@ -1,0 +1,39 @@
+<div class="wrapper fadeInDown">
+    <div id="formContent">
+      <!-- Tabs Titles -->
+  
+      <!-- Icon -->
+      <div class="fadeIn first">
+        <img src="assets/OSM_p02.png" id="icon" alt="User Icon" />
+      </div>
+  
+      <!-- Login Form -->
+      <form #loginForm="ngForm" class="mt-10" (ngSubmit)="loginForm.valid && login();  loginForm.resetForm()">
+        <input 
+            type="text" 
+            id="login" 
+            class="fadeIn second" 
+            name="user" 
+            placeholder="login"
+            [(ngModel)]="usuario.user"
+            #user="ngModel"
+        >
+        <input 
+            type="password" 
+            id="password" 
+            class="fadeIn third" 
+            name="password" 
+            placeholder="password"
+            [(ngModel)]="usuario.pass"
+            #password="ngModel"
+        >
+        <button class="fadeIn fourth boton" value="Log In" (click)="login()">Ingresar</button>
+      </form>
+  
+      <!-- Remind Passowrd -->
+      <div id="formFooter">
+        <a class="underlineHover" href="#">Olvidó la contraseña?</a>
+      </div>
+  
+    </div>
+  </div>
