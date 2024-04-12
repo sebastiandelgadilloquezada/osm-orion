@@ -39,14 +39,14 @@
 
 .menu_row a{
     padding: 5px;
-    color: white;
+    color: #1C274C;
+    cursor: pointer;
 }
 
 .menu_collapse{
     width: 30px;
-    position: absolute;
-    right: 5px;
-    top: 5px;
+    margin-left: auto;
+    margin-right: auto;
     cursor: pointer;
 }
 
@@ -56,16 +56,71 @@
 }
 
 .nocollapse{
-    width: 170px;
+    width: 50%;
     transition-duration: 1s;
 }
 
 .labelNoShow{
     visibility: hidden;
-    transition-duration: .3s;
+    transition-duration: .1s;
 }
 
 .labelShow{
     visibility: visible;
     transition-duration: 1s;
 }
+
+table{
+    width: 95%;
+    background-color: white;
+    margin:10px;
+}
+
+table tr:hover{
+    cursor: pointer;
+    background-color: rgb(233, 231, 231);
+}
+
+table > tr > td > img{
+    width: 20px;
+    cursor: pointer;
+}
+
+.menu_events{
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    z-index: 999;
+    background-color: white;
+}
+
+.icon_menu{
+    width: 100%;
+    padding: 5px;
+    display: flex;
+    text-align: left;
+}
+
+.icon_menu .cerrar_evento{
+    width: 30px;
+    cursor: pointer;
+    align-items: right;
+    margin-left: 70%;
+}
+
+.icon_menu > svg{
+    width: 30px;
+}
+
+.mostrar{
+    visibility: visible;
+    transition-duration: 1s;
+}
+
+.ocultar{
+    visibility: hidden;
+    transition-duration: 1s;
+}
+

@@ -4,6 +4,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { Loader } from "@googlemaps/js-api-loader"
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { EventsService } from '../../services/events.service';
 
 @Component({
   selector: 'app-home',
@@ -17,14 +18,14 @@ export class HomeComponent implements OnInit{
   public longitude: number;
   public markers: any = [];
   public center: google.maps.LatLngLiteral;
-  public map: google.maps.Map;
+  public map: any;
   public position : any;
-  public zoom = 4;
+  public zoom = 12;
   private mapId = "DEMO_MAP_ID";
   geocoder: google.maps.Geocoder;
   public txtSearch : any;
   public wresult = false;
-  public info = "";
+  public info: any;
 
   private loader = new Loader({
     apiKey: "AIzaSyCTkR3En4AT1HXqGZ5kgcTbJ24AoxzAd-A",
@@ -35,38 +36,45 @@ export class HomeComponent implements OnInit{
 
   
 
-constructor(private locationService: CurrentLocationService){}
+constructor(private locationService: CurrentLocationService, private _eventService: EventsService){}
 
   async ngOnInit() {
-    await this.getLocation();
-    await this.initMap();
-  }
+    const position = await this.getLocation();
+    await this.initMap(position);
+    const arrayMarker = await this._eventService.getEvents();
+    this.inyectarMarker(arrayMarker);
 
-
-  async getLocation() {
-    await this.locationService.getPosition().then(pos => {
-        this.latitude = pos.lat;
-        this.longitude = pos.lng;
-      
+    this._eventService.sendPositionMap.subscribe( (data) => {
+      console.log("emiter",data.position);
+      this.centrarMapa(data.position)
     });
+
+    google.maps.event.addListener(this.map, 'click', (event:any) => {
+      this.clickMarker(event.latLng);
+   });
   }
 
-  zoomIn() {
-    // if (this.zoom < this.options.maxZoom) this.zoom++;
-  }
- 
-  zoomOut() {
-    // if (this.zoom > this.options.minZoom) this.zoom--;
+
+  getLocation() {
+    return new Promise(async (resolve) => {
+       await this.locationService.getPosition().then(pos => {
+        let position = { lat: pos.lat, lng: pos.lng}
+        console.log("getPosition: ",position)
+        resolve( position)
+      });
+    })
   }
 
-  async initMap(position? : any): Promise<void> {
+  async initMap(position : any): Promise<void> {
+    console.log("InitMap",typeof position.lat)
     this.loader.load().then(async () => {
       //@ts-ignore
       const { Map } = await google.maps.importLibrary("maps");
       this.map = new Map(document.getElementById("map"), {
-        center: { lat: position? position.lat : this.latitude, lng: position? position.lng : this.longitude },
-        zoom: 12,
-        mapId: 'DEMO_MAP_ID'
+        center: {lat: Number(position.lat), lng: Number(position.lng)},
+        zoom: this.zoom,
+        mapId: '34204983242',
+        gestureHandling: "cooperative",
       } as google.maps.MapOptions);
     });
 
@@ -74,25 +82,76 @@ constructor(private locationService: CurrentLocationService){}
      const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
      const marker = new AdvancedMarkerElement({
        map: this.map,
-       position: {lat: position? position.lat : this.latitude, lng: position? position.lng : this.longitude },
+       position: {lat: Number(position.lat), lng: Number(position.lng)},
        title: 'Mi ubicación',
      });
   }
 
-  // addMarkers() {
-  //   this.markers.push({
-  //     position: {
-  //       lat: this.center.lat + ((Math.random() - 0.5) * 2) / 10,
-  //       lng: this.center.lng + ((Math.random() - 0.5) * 2) / 10,
-  //     },
-  //     label: {
-  //       color: 'red',
-  //       text: 'Marker label ' + (this.markers.length + 1),
-  //     },
-  //     title: 'Marker title ' + (this.markers.length + 1),
-  //     options: { animation: google.maps.Animation.BOUNCE },
-  //   });
-  // }
+  async buscarMarker(position:any){
+   
+    console.log("InitMap",typeof position.lat)
+    this.loader.load().then(async () => {
+      //@ts-ignore
+      const { Map } = await google.maps.importLibrary("maps");
+      this.map = new Map(document.getElementById("map"), {
+        center: {lat: Number(position.lat), lng: Number(position.lng)},
+        zoom: 12,
+        mapId: 'DEMO_MAP_ID'
+      } as google.maps.MapOptions);
+    });
+
+      //@ts-ignore
+      const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+      const marker = new AdvancedMarkerElement({
+        map: this.map,
+        position: {lat: Number(position.lat), lng: Number(position.lng)},
+        title: 'Mi ubicación',
+      });
+  }
+
+  async inyectarMarker(data:any){
+    for (let item in data) {
+      // @ts-ignore
+     const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+     const marker = new AdvancedMarkerElement({
+       map: this.map,
+       position: {lat: Number(data[item].position.lat), lng: Number(data[item].position.lng)},
+       title: 'Mi ubicación',
+     });
+    }
+  }
+
+  async clickMarker(position:any){
+      
+    this._eventService.setEvent(position);
+      // @ts-ignore
+     const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+     const marker = new AdvancedMarkerElement({
+       map: this.map,
+       position: position,
+       title: 'Mi ubicación',
+     });
+    
+  }
+
+  async centrarMapa(position:any){
+    console.log(position)
+    this.map.setZoom(18);
+    this.map.setCenter({lat: Number(position.lat), lng: Number(position.lng)});
+   
+
+
+    // this.loader.load().then(async () => {
+    //   // //@ts-ignore
+    //   // const { Map } = await google.maps.importLibrary("maps");
+    //   // this.map = new Map(document.getElementById("map"), {
+    //   //   center: {lat: Number(position.lat), lng: Number(position.lng)},
+    //   //   zoom: 18,
+    //   //   mapId: 'DEMO_MAP_ID',
+    //   //   gestureHandling: "cooperative",
+    //   // } as google.maps.MapOptions);
+    // });
+  }
   
   buscar(){
     console.log(this.txtSearch)
@@ -115,8 +174,11 @@ constructor(private locationService: CurrentLocationService){}
     this.txtSelect = [];
     this.txtSearch = "";
     this.initMap(position);
-    this.info = `${direction} lat:${position.lat} long: ${position.lng}`;
-
+    this.info = {
+      'address': direction,
+      'lat': position.lat,
+      'lng': position.lng
+    }
   }
 
   revisarTxt(){
