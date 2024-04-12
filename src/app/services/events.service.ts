@@ -77,12 +77,13 @@ export class EventsService {
     return this.events
   }
 
-  setEvent(position: any){
+  setEvent(evento: any){
+    console.log("evento: ",evento)
     var date = new Date();
     this.events.push({
         id: this.events.length+1,
-        tipo: 'Vehículo detenido',
-        position: {lat: Number(position.lat), lng: Number(position.lng)},
+        tipo: evento.tipo,
+        position: {lat: Number(evento.lat), lng: Number(evento.lng)},
         fecha: this.datePipe.transform(date,"dd/MM/yyyy HH:mm:ss"),
         color: '#FFC300 ',
         estado: true

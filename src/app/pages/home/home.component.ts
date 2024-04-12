@@ -5,6 +5,7 @@ import { Loader } from "@googlemaps/js-api-loader"
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { EventsService } from '../../services/events.service';
+import { TypeEventsService } from '../../services/type-events.service';
 
 @Component({
   selector: 'app-home',
@@ -26,6 +27,15 @@ export class HomeComponent implements OnInit{
   public txtSearch : any;
   public wresult = false;
   public info: any;
+  public actModal = false;
+  public itemsTipo: any;
+  public latLng: any;
+  public evento = {
+    tipo:'',
+    lat:0,
+    lng:0
+  }
+
 
   private loader = new Loader({
     apiKey: "AIzaSyCTkR3En4AT1HXqGZ5kgcTbJ24AoxzAd-A",
@@ -36,7 +46,7 @@ export class HomeComponent implements OnInit{
 
   
 
-constructor(private locationService: CurrentLocationService, private _eventService: EventsService){}
+constructor(private locationService: CurrentLocationService, private _eventService: EventsService, private _typeEventService: TypeEventsService){}
 
   async ngOnInit() {
     const position = await this.getLocation();
@@ -45,12 +55,16 @@ constructor(private locationService: CurrentLocationService, private _eventServi
     this.inyectarMarker(arrayMarker);
 
     this._eventService.sendPositionMap.subscribe( (data) => {
-      console.log("emiter",data.position);
       this.centrarMapa(data.position)
     });
 
     google.maps.event.addListener(this.map, 'click', (event:any) => {
-      this.clickMarker(event.latLng);
+      this.itemsTipo = this._typeEventService.getTypesEvents();
+      this.actModal = true;
+      this.latLng = event.latLng.toJSON();
+
+      this.evento.lat = this.latLng.lat;
+      this.evento.lng = this.latLng.lng;
    });
   }
 
@@ -59,14 +73,12 @@ constructor(private locationService: CurrentLocationService, private _eventServi
     return new Promise(async (resolve) => {
        await this.locationService.getPosition().then(pos => {
         let position = { lat: pos.lat, lng: pos.lng}
-        console.log("getPosition: ",position)
         resolve( position)
       });
     })
   }
 
   async initMap(position : any): Promise<void> {
-    console.log("InitMap",typeof position.lat)
     this.loader.load().then(async () => {
       //@ts-ignore
       const { Map } = await google.maps.importLibrary("maps");
@@ -122,8 +134,6 @@ constructor(private locationService: CurrentLocationService, private _eventServi
   }
 
   async clickMarker(position:any){
-      
-    this._eventService.setEvent(position);
       // @ts-ignore
      const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
      const marker = new AdvancedMarkerElement({
@@ -154,7 +164,6 @@ constructor(private locationService: CurrentLocationService, private _eventServi
   }
   
   buscar(){
-    console.log(this.txtSearch)
     this.geocode(this.txtSearch)
   }
 
@@ -185,6 +194,17 @@ constructor(private locationService: CurrentLocationService, private _eventServi
     if(this.txtSearch.length <= 0){
       this.wresult = false;
     }
+  }
+
+  closeModal(){
+    this.actModal = false;
+  }
+
+  saveMarker(){
+    this.clickMarker(this.latLng);
+    this.actModal = false;
+    this._eventService.setEvent(this.evento);
+
   }
 
 
