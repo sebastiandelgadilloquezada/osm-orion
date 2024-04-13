@@ -49,7 +49,5 @@ export class TypeEventsService {
     return this.typeEvents;
   }
 
-  
-
 
 }
