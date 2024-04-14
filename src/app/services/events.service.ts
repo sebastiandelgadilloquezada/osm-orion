@@ -18,7 +18,7 @@ export class EventsService {
         id: 1,
         tipo: 'w',
         title: 'Accidente',
-        position: {lat: -32.979257, lng: -71.535537},
+        position: {lat: -32.96544752549346, lng: -71.54461943043896},
         fecha: '24/04/2024 15:03',
         color: '#FFC300 ',
         estado: true
@@ -36,7 +36,7 @@ export class EventsService {
         id: 3,
         tipo: 'w',
         title: 'Tramo cortado',
-        position: {lat: -32.965288, lng: -71.546094},
+        position: {lat: -32.980427138148926, lng: -71.53025683893584},
         fecha: '24/04/2024 15:03',
         color: '#FFC300 ',
         estado: false
@@ -54,7 +54,7 @@ export class EventsService {
         id: 5,
         tipo: 'w',
         title: 'Calle cortada',
-        position: {lat: -32.92, lng: -71.54},
+        position: {lat: -32.952385770506574, lng: -71.45386754853719},
         fecha: '24/04/2024 15:03',
         color: '#FFC300 ',
         estado: true
@@ -63,7 +63,7 @@ export class EventsService {
         id: 6,
         tipo: 'w',
         title: 'Bache en la vía',
-        position: {lat: -32.934, lng: -71.5564},
+        position: {lat: -33.03947355645192, lng: -71.58933491092728},
         fecha: '24/04/2024 15:03',
         color: '#FFC300 ',
         estado: true
@@ -72,7 +72,7 @@ export class EventsService {
         id: 7,
         tipo: 'w',
         title: 'Vehículo detenido',
-        position: {lat: -32.93421, lng: -71.55674},
+        position: {lat: -32.95232058792421, lng: -71.53397855188419},
         fecha: '24/04/2024 15:03',
         color: '#FFC300 ',
         estado: true

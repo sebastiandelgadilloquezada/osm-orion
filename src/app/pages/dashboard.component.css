@@ -50,6 +50,11 @@
     cursor: pointer;
 }
 
+.menu_events{
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
 .sicollapse{
     width: 70px;
     transition-duration: 1s;

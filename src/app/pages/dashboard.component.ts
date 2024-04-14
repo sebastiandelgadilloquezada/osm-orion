@@ -19,7 +19,7 @@ export class DashboardComponent implements OnInit{
   public despliegueInfo = false;
   public events : any;
   public moviles : any;
-  public mostrarInfo : boolean;
+  public actEvents : boolean;
   public actMoviles: boolean = false;
 
   constructor(private _eventService: EventsService, private _movilesServices: MovilService){
@@ -31,36 +31,26 @@ export class DashboardComponent implements OnInit{
 
 
   collapse_sidebar(menu:any, menuCollapse: boolean, despliegueInfo: boolean){
-    
+      
+    console.log(menu)
+    console.log(menuCollapse)
+    console.log(menu)
+
+
     if(menu == 'menu'){
       this.menu_collapse = !this.menu_collapse;
+
     }else if(menu == 'event'){
+      console.log("clo clo clo")
       this.getEventos();
       this.menu_collapse = !this.menu_collapse;
-      this.despliegueInfo = !this.menu_collapse;
-      if(!this.menu_collapse){
-        setTimeout(() => {
-          console.log('mostrar');
-          this.mostrarInfo = true;
-        }, 200);
-      }else{
-        this.mostrarInfo = false;
-      }
+      this.actEvents = !this.actEvents;
+
     }else if(menu == 'movil'){
+      console.log("cla cla cla")
       this.getMoviles();
       this.menu_collapse = !this.menu_collapse;
-      this.despliegueInfo = !this.menu_collapse;
-
-      if(!this.menu_collapse){
-        setTimeout(() => {
-          console.log('mostrar');
-          this.actMoviles = true;
-        }, 200);
-      }else{
-        this.actMoviles = false;
-      }
-      
-    }else{
+      this.actMoviles = !this.actMoviles;
 
     }
   }
