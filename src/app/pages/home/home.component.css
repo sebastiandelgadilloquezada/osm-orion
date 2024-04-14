@@ -48,10 +48,10 @@
   }
 
   .informacion{
-    padding: 10px;
-    width: auto;
+    padding: 7px;
+    width: 300px;
     min-width: 300px;
-    height: 100px;
+    height: 200px;
     position: absolute;
     bottom: 20px;
     left: 30%;
@@ -66,12 +66,44 @@
     font-size: .8rem;
   }
 
+  hr{
+    height: 2px;
+    margin: 2px;
+  }
+
   .card-text{
     font-size: .7rem;
   }
 
   .card{
     border: none;
+  }
+
+  .card-body{
+    position: relative;
+    margin: 0;
+    padding: 0;
+  }
+
+  .info_fotos{
+    display: flex;
+    justify-content: space-between;
+    background-color: #ccc9c9;
+    padding: 2px;
+    overflow-x: hidden;
+    overflow-x: scroll;
+  }
+
+  .info_fotos img{
+    width: 50px;
+    margin: 2px;
+    cursor: pointer;
+  }
+
+  .btn_cerrar_info{
+    position: absolute;
+    bottom:-40px;
+    right: 10px;
   }
 
   .modal_map{

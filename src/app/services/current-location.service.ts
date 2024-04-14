@@ -20,10 +20,12 @@ export class CurrentLocationService {
     });
 }
 
-getGeocode(address: string){
+  getGeocode(address: string){
+    return this.$http.get('https://maps.googleapis.com/maps/api/geocode/json?address='+address+'&key='+this.apiKey);
+  }
 
-  return this.$http.get('https://maps.googleapis.com/maps/api/geocode/json?address='+address+'&key='+this.apiKey);
-      
+  getDegeocode(latlng: any){
+    return this.$http.get<any[]>('https://maps.googleapis.com/maps/api/geocode/json?latlng='+latlng+'&key='+this.apiKey);
+  }
 
-}
 }

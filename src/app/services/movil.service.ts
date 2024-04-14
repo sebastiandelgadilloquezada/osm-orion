@@ -7,37 +7,41 @@ export class MovilService {
   public moviles = [
     {
       id: 1,
-      tipo: 'Vehìculo',
+      tipo: 'm',
+      title: 'Vehìculo',
       patente: 'JVCH-49',
       velocidad: '45',
-      position: {lat: -32.97498257, lng: -71.25357537},
+      position: {lat: -32.89747779558939, lng: -71.50375086435182},
       fecha: '24/04/2024 15:03',
       color: '#FFC300 ',
       estado: true
     },
     {
       id: 2,
-      tipo: 'Camión',
+      title: 'Camión',
+      tipo: 'm',
       patente: 'JVCH-50',
       velocidad: '60',
-      position: {lat: -32.96758988, lng: -71.25399013},
+      position: {lat: -32.912439952763876, lng: -71.49518428700598},
       fecha: '24/04/2024 15:03',
       color: '#FFC300 ',
       estado: true
     },
     {
       id: 3,
-      tipo: 'Furgón',
+      title: 'Furgón',
+      tipo: 'm',
       patente: 'JVCH-49',
       velocidad: '20',
-      position: {lat: -32.96567288, lng: -71.25467094},
+      position: {lat: -32.93962488493326, lng: -71.48184064018372},
       fecha: '24/04/2024 15:03',
       color: '#FFC300 ',
       estado: false
     },
     {
       id: 4,
-      tipo: 'Furgon 3/4',
+      title: 'Furgon 3/4',
+      tipo: 'm',
       patente: 'JVFF-49',
       velocidad: '37',
       position: {lat: -32.98932691432597, lng: -71.52403902734706},
@@ -47,7 +51,8 @@ export class MovilService {
     },
     {
       id: 5,
-      tipo: 'Furgón pasajeros',
+      title: 'Furgón pasajeros',
+      tipo: 'm',
       patente: 'VVCH-49',
       velocidad: '20',
       position: {lat: -32.93368712310296, lng: -71.53150652091033 },
@@ -57,7 +62,8 @@ export class MovilService {
     },
     {
       id: 6,
-      tipo: 'Auto',
+      tipo: 'm',
+      title:'Auto',
       patente: 'JVBBCH-49',
       velocidad: '20',
       position: {lat: -32.96213832595877, lng: -71.52217304499663 },
@@ -67,7 +73,8 @@ export class MovilService {
     },
     {
       id: 7,
-      tipo: 'Mini car',
+      title: 'Mini car',
+      tipo: 'm',
       patente: 'JVXX-49',
       velocidad: '24',
       position: {lat: -32.953868919750654, lng: -71.53884523021239 },
@@ -81,5 +88,22 @@ export class MovilService {
 
   getMoviles(){
     return this.moviles;
+  }
+
+  async searchMarker(latLng:any){
+    let result : any;
+    return new Promise((resolve) =>{
+      for (const key in this.moviles) {
+        if(this.moviles[key].position.lat == latLng.lat && this.moviles[key].position.lng == latLng.lng){
+          result = this.moviles[key] ;
+        }
+      }
+      
+      if(result){
+        resolve(result);
+      }else{
+        resolve(false);
+      }
+    })
   }
 }

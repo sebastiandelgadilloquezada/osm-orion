@@ -16,7 +16,8 @@ export class EventsService {
     this.events = [
       {
         id: 1,
-        tipo: 'Accidente',
+        tipo: 'w',
+        title: 'Accidente',
         position: {lat: -32.979257, lng: -71.535537},
         fecha: '24/04/2024 15:03',
         color: '#FFC300 ',
@@ -24,7 +25,8 @@ export class EventsService {
       },
       {
         id: 2,
-        tipo: 'Otro evento',
+        tipo: 'w',
+        title: 'Otro evento',
         position: {lat: -32.967988, lng: -71.539013},
         fecha: '24/04/2024 15:03',
         color: '#FFC300 ',
@@ -32,7 +34,8 @@ export class EventsService {
       },
       {
         id: 3,
-        tipo: 'Tramo cortado',
+        tipo: 'w',
+        title: 'Tramo cortado',
         position: {lat: -32.965288, lng: -71.546094},
         fecha: '24/04/2024 15:03',
         color: '#FFC300 ',
@@ -40,7 +43,8 @@ export class EventsService {
       },
       {
         id: 4,
-        tipo: 'Transito lento',
+        tipo: 'w',
+        title: 'Transito lento',
         position: {lat: -32.959257, lng: -71.525537},
         fecha: '24/04/2024 15:03',
         color: '#FFC300 ',
@@ -48,7 +52,8 @@ export class EventsService {
       },
       {
         id: 5,
-        tipo: 'Calle cortada',
+        tipo: 'w',
+        title: 'Calle cortada',
         position: {lat: -32.92, lng: -71.54},
         fecha: '24/04/2024 15:03',
         color: '#FFC300 ',
@@ -56,7 +61,8 @@ export class EventsService {
       },
       {
         id: 6,
-        tipo: 'Bache en la vía',
+        tipo: 'w',
+        title: 'Bache en la vía',
         position: {lat: -32.934, lng: -71.5564},
         fecha: '24/04/2024 15:03',
         color: '#FFC300 ',
@@ -64,7 +70,8 @@ export class EventsService {
       },
       {
         id: 7,
-        tipo: 'Vehículo detenido',
+        tipo: 'w',
+        title: 'Vehículo detenido',
         position: {lat: -32.93421, lng: -71.55674},
         fecha: '24/04/2024 15:03',
         color: '#FFC300 ',
@@ -78,11 +85,12 @@ export class EventsService {
   }
 
   setEvent(evento: any){
-    console.log("evento: ",evento)
+  
     var date = new Date();
     this.events.push({
         id: this.events.length+1,
         tipo: evento.tipo,
+        title: evento.title,
         position: {lat: Number(evento.lat), lng: Number(evento.lng)},
         fecha: this.datePipe.transform(date,"dd/MM/yyyy HH:mm:ss"),
         color: '#FFC300 ',
@@ -100,13 +108,21 @@ export class EventsService {
   }
 
   
-  searchMarker(latLng:any){
-    
-    for (const key in this.events) {
-      if(this.events[key].position.lat == latLng.lat && this.events[key].position.lng == latLng.lng){
-        return this.events[key];
+  async searchMarker(latLng:any){
+    let result : any;
+    return new Promise((resolve) =>{
+      for (const key in this.events) {
+        if(this.events[key].position.lat == latLng.lat && this.events[key].position.lng == latLng.lng){
+          result = this.events[key] ;
+        }
       }
-    }
+      
+      if(result){
+        resolve(result);
+      }else{
+        resolve(false);
+      }
+    })
   }
 
 

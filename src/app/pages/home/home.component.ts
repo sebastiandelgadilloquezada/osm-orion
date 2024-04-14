@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { EventsService } from '../../services/events.service';
 import { TypeEventsService } from '../../services/type-events.service';
 import { MovilService } from '../../services/movil.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -31,14 +32,18 @@ export class HomeComponent implements OnInit{
   public info = {
     address : '',
     lat : 0,
-    lng : 0
+    lng : 0,
+    img : '',
+    patente:'',
+    data: {}
   };
   public actModal = false;
   public itemsTipo: any;
   public latLng: any;
   public marker: any;
   public evento = {
-    tipo:'',
+    tipo:'w',
+    title:'',
     lat:0,
     lng:0
   }
@@ -62,7 +67,7 @@ async ngOnInit() {
     const position = await this.getLocation();
     await this.initMap(position);
     const arrayMarker = await this._eventService.getEvents();
-    this.inyectarMarker(arrayMarker);
+    this.inyectarMarker(arrayMarker, 'warning');
     const arrayCars = await this._movilService.getMoviles();
     this.inyectarMarker(arrayCars, 'cars')
 
@@ -106,11 +111,11 @@ async ngOnInit() {
     this.evento.lat = Number(position.lat);
     this.evento.lng = Number(position.lng);
     this.evento.tipo = "Mi Ubicación";
-    this.saveMarker();
+    // this.saveMarker();
     
      //@ts-ignore
     const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-    this.clickMarker(position);
+    this.clickMarker(position, 'home');
 
     //  const marker = new AdvancedMarkerElement({
     //    map: this.map,
@@ -181,32 +186,23 @@ async ngOnInit() {
   async clickMarker(position:any, tipo? : any){
       // @ts-ignore
     const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-    
-    const beachFlagImg = document.createElement('img');
-    beachFlagImg.src = 'assets/cars.png';
-    beachFlagImg.width = 40;
+    const imgIcon = document.createElement('img');
+    imgIcon.width = 40;    
 
-    const alarmIcon = document.createElement('img');
-    alarmIcon.src = 'assets/warning.png';
-    alarmIcon.width = 40;
-    
-
-    let marker : any = new AdvancedMarkerElement();
     if(tipo == 'cars'){
-      marker = new AdvancedMarkerElement({
-        map: this.map,
-        position: position,
-        title: 'coquito',
-        content: beachFlagImg,
-      });
-    }else{
-      marker = new AdvancedMarkerElement({
-        map: this.map,
-        position: position,
-        title: 'coquito',
-        content: alarmIcon,
-      });
+      imgIcon.src = 'assets/cars.png';
+    }else if(tipo == 'home'){
+      imgIcon.src = 'assets/home.png';
+    }else if(tipo == 'warning'){
+      imgIcon.src = 'assets/warning.png';
     }
+
+    const marker = new AdvancedMarkerElement({
+      map: this.map,
+      position: position,
+      title: 'My Icon',
+      content: imgIcon,
+    });
 
      google.maps.event.addListener(marker, 'click', (event:any) => { 
       this.getInfoMarker(event)
@@ -242,7 +238,10 @@ async ngOnInit() {
     this.info = {
       address: direction,
       lat: position.lat,
-      lng: position.lng
+      lng: position.lng,
+      img : '',
+      patente:'',
+      data: {}
     }
   }
 
@@ -257,29 +256,48 @@ async ngOnInit() {
   }
 
   saveMarker(){
-    this.clickMarker(this.latLng);
+    this.clickMarker(this.latLng, 'warning');
     this.actModal = false;
+    this.evento.tipo = 'w';
+    console.log(this.evento.title)
     this._eventService.setEvent(this.evento);
   }
 
-  getInfoMarker(marker : any){
-    
+  async getInfoMarker(marker : any){
+    console.log(marker)
     let marca = marker.latLng.toJSON();
     this.map.setZoom(16);
     this.map.setCenter({lat: Number(marca.lat), lng: Number(marca.lng)});
-    const markSel = this._eventService.searchMarker(marca);
+    let markSel :any;
 
-    console.log("markSel",markSel);
-
-    console.log(this._eventService.getEvents)
-
-    if(markSel){
-      this.info.address = markSel.tipo;
-      this.info.lat = markSel.position.lat;
-      this.info.lng = markSel.position.lng;
-      this.actInfo = true;
+    if(await this._eventService.searchMarker(marca)){
+      markSel = await this._eventService.searchMarker(marca);
+      markSel.img = 'assets/warning.png';
+    }else if(await this._movilService.searchMarker(marca)){
+      markSel = await this._movilService.searchMarker(marca);
+      markSel.img = 'assets/cars.png';
+    }else{
+      this.actInfo = false;
+      return
     }
- 
+    let latLng = markSel.position.lat +","+markSel.position.lng;
+      const data = this.locationService.getDegeocode(latLng)
+      .subscribe((data:any)=> {
+        console.log(data.results[0].formatted_address)
+        this.info.data = data.results[0].formatted_address;
+      });
+      
+      this.info.address = markSel? markSel.title :'';
+      this.info.img = markSel? markSel.img: '';
+      this.info.patente = markSel? markSel.patente: '';
+      this.info.lat = markSel? markSel.position.lat: '';
+      this.info.lng = markSel? markSel.position.lng: '';
+      this.actInfo = true;
+      return
+  }
+
+  cerrar_info(){
+    this.actInfo = false;
   }
 
 
