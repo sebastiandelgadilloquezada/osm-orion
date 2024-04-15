@@ -15,6 +15,7 @@ import { MovilService } from '../services/movil.service';
 export class DashboardComponent implements OnInit{
   
   public menu_collapse = true;
+  public menu_collapse1 = true;
   public menuActive = 'home';
   public despliegueInfo = false;
   public events : any;
@@ -32,27 +33,23 @@ export class DashboardComponent implements OnInit{
 
   collapse_sidebar(menu:any, menuCollapse: boolean, despliegueInfo: boolean){
       
-    console.log(menu)
-    console.log(menuCollapse)
-    console.log(menu)
-
-
     if(menu == 'menu'){
       this.menu_collapse = !this.menu_collapse;
 
     }else if(menu == 'event'){
-      console.log("clo clo clo")
       this.getEventos();
       this.menu_collapse = !this.menu_collapse;
       this.actEvents = !this.actEvents;
 
     }else if(menu == 'movil'){
-      console.log("cla cla cla")
       this.getMoviles();
       this.menu_collapse = !this.menu_collapse;
       this.actMoviles = !this.actMoviles;
-
     }
+  }
+
+  collapse_sidebar1(){
+    this.menu_collapse1 = !this.menu_collapse1;
   }
 
   showMap(data: any){

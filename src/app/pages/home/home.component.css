@@ -134,3 +134,52 @@
   .modal-footer button{
     margin: 10px;
   }
+
+  .cont-capas{
+    width: 200px;
+    height: 60px;
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    overflow: hidden;
+  }
+
+  .cont-capas .capa{
+    width: 60px;
+    height: 60px;
+    background: white;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 10px;
+  }
+
+  .capa{
+    display: flex;
+  }
+
+  .capa img{
+    padding: 10px;
+    width: 100%;
+  }
+
+  .capa svg{
+    padding: 10px;
+    width: 100%;
+  }
+
+  .expand{
+    height:210px;
+    transition-duration: 1s;
+  }
+  .noexpand{
+    height:70px;
+    transition-duration: 1s;
+  }
+
+  .hab{
+    opacity: 1;
+  }
+
+  .nohab{
+    opacity: 0.3;
+  }

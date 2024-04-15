@@ -199,6 +199,12 @@ html {
     -moz-animation-duration:1s;
     animation-duration:1s;
   }
+
+  .fadeIn img{
+    padding: 10px;
+    margin: 10px;
+    border-radius: 20px;
+  }
   
   .fadeIn.first {
     -webkit-animation-delay: 0.4s;

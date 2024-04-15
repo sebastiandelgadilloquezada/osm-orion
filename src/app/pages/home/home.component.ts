@@ -47,6 +47,10 @@ export class HomeComponent implements OnInit{
     lat:0,
     lng:0
   }
+  public actCapa = false;
+  public capaMovil = true;
+  public capaEvent = true;
+
 
 
   private loader = new Loader({
@@ -66,15 +70,9 @@ constructor(private locationService: CurrentLocationService,
 async ngOnInit() {
     const position = await this.getLocation();
     await this.initMap(position);
-    const arrayMarker = await this._eventService.getEvents();
-    this.inyectarMarker(arrayMarker, 'warning');
-    const arrayCars = await this._movilService.getMoviles();
-    this.inyectarMarker(arrayCars, 'cars')
-
-    this._eventService.sendPositionMap.subscribe( (data) => {
-      this.centrarMapa(data.position)
-    });
-
+   
+    await this.cargarMarkers()
+    
     google.maps.event.addListener(this.map, 'click', (event:any) => {
       this.itemsTipo = this._typeEventService.getTypesEvents();
       this.actModal = true;
@@ -102,6 +100,7 @@ async ngOnInit() {
       const { Map } = await google.maps.importLibrary("maps");
       this.map = new Map(document.getElementById("map"), {
         center: {lat: Number(position.lat), lng: Number(position.lng)},
+        mapTypeId: 'roadmap',
         zoom: this.zoom,
         mapId: '34204983242',
         gestureHandling: "cooperative",
@@ -111,30 +110,10 @@ async ngOnInit() {
     this.evento.lat = Number(position.lat);
     this.evento.lng = Number(position.lng);
     this.evento.tipo = "Mi Ubicación";
-    // this.saveMarker();
     
      //@ts-ignore
     const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
     this.clickMarker(position, 'home');
-
-    //  const marker = new AdvancedMarkerElement({
-    //    map: this.map,
-    //    position: {lat: Number(position.lat), lng: Number(position.lng)},
-    //    title: 'cuchiflo',
-    //  });
-
-    //  {
-    //   id: 7,
-    //   tipo: 'Vehículo detenido',
-    //   position: {lat: -32.93421, lng: -71.55674},
-    //   fecha: '24/04/2024 15:03',
-    //   color: '#FFC300 ',
-    //   estado: true
-    // }
-    //  google.maps.event.addListener(marker, 'click', (event:any) => { 
-    //   // console.log(event.latLng.toJSON());
-    //   this.getInfoMarker(event)
-    // });
   }
 
   async buscarMarker(position:any){
@@ -150,36 +129,11 @@ async ngOnInit() {
     });
 
     this.clickMarker(position);
-
-      // //@ts-ignore
-      // const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-      // const marker = new AdvancedMarkerElement({
-      //   map: this.map,
-      //   position: {lat: Number(position.lat), lng: Number(position.lng)},
-      //   title: 'tito',
-      // });
-
-      // google.maps.event.addListener(marker, 'click', (event:any) => { 
-      //   this.getInfoMarker(event)
-      // });
   }
 
   async inyectarMarker(data:any, tipo?: any){
     for (let item in data) {
-      // @ts-ignore
-
       await this.clickMarker(data[item].position, tipo);
-    //  const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-    //  const marker = new AdvancedMarkerElement({
-    //    map: this.map,
-    //    position: {lat: Number(data[item].position.lat), lng: Number(data[item].position.lng)},
-    //    title: `${data[item].id}`,
-    //  });
-      
-    //  google.maps.event.addListener(marker, 'click', (event:any) => { 
-    //   this.getInfoMarker(event)
-    // });
-
     }
   }
 
@@ -270,7 +224,12 @@ async ngOnInit() {
     this.map.setCenter({lat: Number(marca.lat), lng: Number(marca.lng)});
     let markSel :any;
 
-    if(await this._eventService.searchMarker(marca)){
+    const miLoct:any = this.locationService.getMiPosition()[0];
+
+    if(miLoct.position.lat == Number(marca.lat) && miLoct.position.lng == Number(marca.lng)){
+      markSel = miLoct;
+      markSel.img = 'assets/home.png';
+    }else if(await this._eventService.searchMarker(marca)){
       markSel = await this._eventService.searchMarker(marca);
       markSel.img = 'assets/warning.png';
     }else if(await this._movilService.searchMarker(marca)){
@@ -280,6 +239,7 @@ async ngOnInit() {
       this.actInfo = false;
       return
     }
+    
     let latLng = markSel.position.lat +","+markSel.position.lng;
       const data = this.locationService.getDegeocode(latLng)
       .subscribe((data:any)=> {
@@ -300,6 +260,40 @@ async ngOnInit() {
     this.actInfo = false;
   }
 
+  expandirCapa(){
+    this.actCapa = !this.actCapa
+  }
+
+  setMap(tipo:any){
+
+    if(tipo == 'events'){
+      this.capaEvent = !this.capaEvent;
+    }else if(tipo == 'movil'){
+      this.capaMovil = !this.capaMovil;
+    }
+
+    this.ngOnInit();
+
+  }
+
+  async cargarMarkers(){
+
+    if(this.capaEvent){
+      const arrayMarker = await this._eventService.getEvents();
+      this.inyectarMarker(arrayMarker, 'warning');
+    }
+    
+    if(this.capaMovil){
+      const arrayCars = await this._movilService.getMoviles();
+      this.inyectarMarker(arrayCars, 'cars')
+    }
+ 
+
+    this._eventService.sendPositionMap.subscribe( (data) => {
+      this.centrarMapa(data.position)
+    });
+
+  }
 
 }
 
