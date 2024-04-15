@@ -8,6 +8,7 @@ import { EventsService } from '../../services/events.service';
 import { TypeEventsService } from '../../services/type-events.service';
 import { MovilService } from '../../services/movil.service';
 import { Observable } from 'rxjs';
+import { TrackeoService } from '../../services/trackeo.service';
 
 @Component({
   selector: 'app-home',
@@ -50,8 +51,8 @@ export class HomeComponent implements OnInit{
   public actCapa = false;
   public capaMovil = true;
   public capaEvent = true;
-
-
+  public arrayTrack : any = [];
+  public clear_auto = true;
 
   private loader = new Loader({
     apiKey: "AIzaSyCTkR3En4AT1HXqGZ5kgcTbJ24AoxzAd-A",
@@ -60,14 +61,26 @@ export class HomeComponent implements OnInit{
 
   txtSelect :any = [];
 
+  position_car = {
+    lat: 0,
+    lng: 0
+  }
+
+  public marker_car: any;
+
   
 
 constructor(private locationService: CurrentLocationService, 
             private _eventService: EventsService, 
             private _typeEventService: TypeEventsService,
-            private _movilService: MovilService){}
+            private _movilService: MovilService,
+            private _trackService: TrackeoService){}
   
 async ngOnInit() {
+    
+  const tracker = JSON.stringify(this._trackService.getTrack());
+  this.arrayTrack = JSON.parse(tracker)[0];
+
     const position = await this.getLocation();
     await this.initMap(position);
    
@@ -78,7 +91,6 @@ async ngOnInit() {
       this.actModal = true;
       this.actInfo = false;
       this.latLng = event.latLng.toJSON();
-
       this.evento.lat = this.latLng.lat;
       this.evento.lng = this.latLng.lng;
    });
@@ -165,7 +177,6 @@ async ngOnInit() {
   }
 
   async centrarMapa(position:any){
-    console.log(position)
     this.map.setZoom(18);
     this.map.setCenter({lat: Number(position.lat), lng: Number(position.lng)});
   }
@@ -178,7 +189,6 @@ async ngOnInit() {
     this.locationService.getGeocode(request).subscribe( (data:any) => {
         if(data.status == 'OK'){
           this.txtSelect = data.results;
-          console.log(data.results)
         }else{
           this.wresult = true;
         }
@@ -213,12 +223,10 @@ async ngOnInit() {
     this.clickMarker(this.latLng, 'warning');
     this.actModal = false;
     this.evento.tipo = 'w';
-    console.log(this.evento.title)
     this._eventService.setEvent(this.evento);
   }
 
   async getInfoMarker(marker : any){
-    console.log(marker)
     let marca = marker.latLng.toJSON();
     this.map.setZoom(16);
     this.map.setCenter({lat: Number(marca.lat), lng: Number(marca.lng)});
@@ -243,7 +251,6 @@ async ngOnInit() {
     let latLng = markSel.position.lat +","+markSel.position.lng;
       const data = this.locationService.getDegeocode(latLng)
       .subscribe((data:any)=> {
-        console.log(data.results[0].formatted_address)
         this.info.data = data.results[0].formatted_address;
       });
       
@@ -293,6 +300,49 @@ async ngOnInit() {
       this.centrarMapa(data.position)
     });
 
+  }
+
+  async startCar(){
+    this.clear_auto = !this.clear_auto;
+    let maximo = this.arrayTrack.length;
+    let num_avanza = 0;
+    console.log(this.clear_auto)
+
+    let timeId = setInterval(async () => {
+      if(num_avanza >= maximo || this.clear_auto){ clearInterval(timeId); return}
+      await this.avanzar_car(this.arrayTrack[num_avanza]);
+      num_avanza++;
+    },1500);
+
+  }
+
+  async avanzar_car(car:any){
+
+    // @ts-ignore
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+    const imgIcon = document.createElement('img');
+    imgIcon.width = 40;
+    imgIcon.src = 'assets/car_circle.png';
+
+    this.marker_car = new AdvancedMarkerElement({
+      map: this.map,
+      position: this.position_car,
+      title: 'My Icon',
+      content: imgIcon,
+    });
+
+    for (const key in car.position) {
+      this.position_car.lat = Number(car.position[key].lat);
+      this.position_car.lng = Number(car.position[key].lng);
+    }
+
+    this.map.setCenter(this.position_car);
+    this.map.setZoom(18);
+
+     google.maps.event.addListener(this.marker_car, 'click', (event:any) => { 
+      this.getInfoMarker(event)
+    });
+    
   }
 
 }

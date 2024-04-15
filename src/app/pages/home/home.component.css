@@ -183,3 +183,15 @@
   .nohab{
     opacity: 0.3;
   }
+
+  .car_red{
+    position: absolute;
+    bottom: 100px;
+    left: 20px;
+    width: 60px;
+  }
+
+  .car_red img{
+    width: 60px;
+    cursor:pointer;
+  }
