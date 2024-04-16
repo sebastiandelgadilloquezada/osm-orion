@@ -1,9 +1,13 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable, Output } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MovilService {
+
+  @Output() followCarEM: EventEmitter<any> = new EventEmitter<any>();
+  @Output() playCarEM: EventEmitter<any> = new EventEmitter<any>();
+
   public moviles = [
     {
       id: 1,
@@ -105,5 +109,15 @@ export class MovilService {
         resolve(false);
       }
     })
+  }
+
+  followCarFn(status:any){
+    console.log("followCarFn",status)
+    this.followCarEM.emit(status);
+  }
+
+  playCarFn(status: any){
+    console.log("playCarFn",status)
+    this.playCarEM.emit(status);
   }
 }

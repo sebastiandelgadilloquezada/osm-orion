@@ -53,6 +53,8 @@ export class HomeComponent implements OnInit{
   public capaEvent = true;
   public arrayTrack : any = [];
   public clear_auto = true;
+  public center_car = true;
+  private num_avanza = 0;
 
   private loader = new Loader({
     apiKey: "AIzaSyCTkR3En4AT1HXqGZ5kgcTbJ24AoxzAd-A",
@@ -79,7 +81,7 @@ constructor(private locationService: CurrentLocationService,
 async ngOnInit() {
     
   const tracker = JSON.stringify(this._trackService.getTrack());
-  this.arrayTrack = JSON.parse(tracker)[0];
+  this.arrayTrack = JSON.parse(tracker);
 
     const position = await this.getLocation();
     await this.initMap(position);
@@ -300,49 +302,80 @@ async ngOnInit() {
       this.centrarMapa(data.position)
     });
 
+    this._movilService.followCarEM.subscribe( (status) => {
+      this.center_car = status;
+     
+    });
+
+    this._movilService.playCarEM.subscribe( (status) => {
+      this.clear_auto = status;
+      this.startCar();
+    });
+
   }
 
   async startCar(){
-    this.clear_auto = !this.clear_auto;
-    let maximo = this.arrayTrack.length;
-    let num_avanza = 0;
-    console.log(this.clear_auto)
+     // @ts-ignore
+     const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+     let maximo = this.arrayTrack.length;
 
-    let timeId = setInterval(async () => {
-      if(num_avanza >= maximo || this.clear_auto){ clearInterval(timeId); return}
-      await this.avanzar_car(this.arrayTrack[num_avanza]);
-      num_avanza++;
-    },1500);
-
-  }
-
-  async avanzar_car(car:any){
-
-    // @ts-ignore
-    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
     const imgIcon = document.createElement('img');
     imgIcon.width = 40;
     imgIcon.src = 'assets/car_circle.png';
 
-    this.marker_car = new AdvancedMarkerElement({
+    if(this.num_avanza == 0){
+      this.position_car.lat = Number(this.arrayTrack[0].position.lat);
+      this.position_car.lng = Number(this.arrayTrack[0].position.lng);
+    }else{
+      this.position_car.lat = Number(this.arrayTrack[this.num_avanza].position.lat);
+      this.position_car.lng = Number(this.arrayTrack[this.num_avanza].position.lng);
+    }
+
+    const marker = new AdvancedMarkerElement({
       map: this.map,
       position: this.position_car,
       title: 'My Icon',
       content: imgIcon,
     });
+  
+    
+  
+    let timeId = setInterval(() => {
+      if(this.num_avanza >= maximo || !this.clear_auto ){ clearInterval(timeId); return }
+      this.num_avanza++;
+      this.avanzarCar(marker);
+      marker.position = this.position_car;
+    },1500);
 
-    for (const key in car.position) {
-      this.position_car.lat = Number(car.position[key].lat);
-      this.position_car.lng = Number(car.position[key].lng);
-    }
 
+    
+      
+     
+
+      // google.maps.event.addListener(marker_car, 'click', (event:any) => { 
+      //   this.getInfoMarker(event)
+      // });
+    
+
+    // let timeId = setInterval(() => {
+    //   if(this.num_avanza >= maximo || this.clear_auto){ clearInterval(timeId); return }
+    //   if(this.center_car){
+    //     this.map.setCenter(this.position_car);
+    //     this.map.setZoom(18);
+    //   }
+    //   this.num_avanza++;
+    // },1500);
+
+  }
+
+  avanzarCar(marker:any){
+    this.position_car.lat = Number(this.arrayTrack[this.num_avanza].position.lat);
+    this.position_car.lng = Number(this.arrayTrack[this.num_avanza].position.lng);
+
+    if(this.center_car){
     this.map.setCenter(this.position_car);
     this.map.setZoom(18);
-
-     google.maps.event.addListener(this.marker_car, 'click', (event:any) => { 
-      this.getInfoMarker(event)
-    });
-    
+    }
   }
 
 }

@@ -22,6 +22,8 @@ export class DashboardComponent implements OnInit{
   public moviles : any;
   public actEvents : boolean;
   public actMoviles: boolean = false;
+  public playCar: boolean = false;
+  public followCar: boolean = false;
 
   constructor(private _eventService: EventsService, private _movilesServices: MovilService){
 
@@ -62,6 +64,17 @@ export class DashboardComponent implements OnInit{
 
   getMoviles(){
     this.moviles = this._movilesServices.getMoviles();
+  }
+
+  playCarFn(){
+    this.playCar = !this.playCar;
+    this.followCar = this.playCar;
+    this._movilesServices.playCarFn(this.playCar);
+  }
+
+  followCarFn(){
+    this.followCar = !this.followCar;
+    this._movilesServices.followCarFn(this.followCar);
   }
 
 

@@ -9,7 +9,6 @@ export class EventsService {
   public events : any;
   @Output() sendPositionMap: EventEmitter<any> = new EventEmitter<any>();
 
-
   constructor(private datePipe: DatePipe) { 
 
       

@@ -195,3 +195,9 @@
     width: 60px;
     cursor:pointer;
   }
+
+  .car_red svg{
+    cursor: pointer;
+    float: left;
+    background-color: white;
+  }
