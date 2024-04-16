@@ -160,3 +160,14 @@ table > tr > td > img{
     opacity: 0.3;
   }
 
+.alertV{
+    background-color: red;
+    color: white;
+    text-align: center;
+}
+
+.noAlertV{
+    background-color: none;
+    text-align: center;
+}
+

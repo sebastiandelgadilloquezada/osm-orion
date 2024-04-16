@@ -4,6 +4,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { SidebarComponent } from '../shared/sidebar/sidebar.component';
 import { EventsService } from '../services/events.service';
 import { MovilService } from '../services/movil.service';
+import { TypeMovilService } from '../services/type-movil.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,7 +26,7 @@ export class DashboardComponent implements OnInit{
   public playCar: boolean = false;
   public followCar: boolean = false;
 
-  constructor(private _eventService: EventsService, private _movilesServices: MovilService){
+  constructor(private _eventService: EventsService, private _movilesServices: MovilService, private _tipoMovil: TypeMovilService){
 
   }
   ngOnInit(): void {
@@ -75,6 +76,10 @@ export class DashboardComponent implements OnInit{
   followCarFn(){
     this.followCar = !this.followCar;
     this._movilesServices.followCarFn(this.followCar);
+  }
+
+  tipoMovil(patente:any){
+    return this._tipoMovil.getTipoMovil(patente);
   }
 
 

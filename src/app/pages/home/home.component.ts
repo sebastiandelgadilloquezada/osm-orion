@@ -63,10 +63,15 @@ export class HomeComponent implements OnInit{
 
   txtSelect :any = [];
 
-  position_car = {
-    lat: 0,
-    lng: 0
+  car = {
+    position: {lat: 0,lng: 0,},
+    patente: 0,
+    velocidad: 0,
+    altitud: 0,
   }
+
+  
+
 
   public marker_car: any;
 
@@ -236,6 +241,8 @@ async ngOnInit() {
 
     const miLoct:any = this.locationService.getMiPosition()[0];
 
+    console.log(marker.latLng.toJSON())
+
     if(miLoct.position.lat == Number(marca.lat) && miLoct.position.lng == Number(marca.lng)){
       markSel = miLoct;
       markSel.img = 'assets/home.png';
@@ -324,56 +331,51 @@ async ngOnInit() {
     imgIcon.src = 'assets/car_circle.png';
 
     if(this.num_avanza == 0){
-      this.position_car.lat = Number(this.arrayTrack[0].position.lat);
-      this.position_car.lng = Number(this.arrayTrack[0].position.lng);
+      this.car.patente = this.arrayTrack[0].patente;
+      this.car.velocidad = this.arrayTrack[0].speed.split(",")[0];
+      this.car.altitud = this.arrayTrack[0].altitude.split(",")[0];          
+      this.car.position.lat = Number(this.arrayTrack[0].position.lat);
+      this.car.position.lng = Number(this.arrayTrack[0].position.lng);
+
     }else{
-      this.position_car.lat = Number(this.arrayTrack[this.num_avanza].position.lat);
-      this.position_car.lng = Number(this.arrayTrack[this.num_avanza].position.lng);
+      console.log(this.arrayTrack[this.num_avanza].speed.split(",")[0])
+      this.car.patente = this.arrayTrack[this.num_avanza].patente;
+      this.car.velocidad = this.arrayTrack[this.num_avanza].speed.split(",")[0];
+      this.car.altitud = this.arrayTrack[this.num_avanza].altitude.split(",")[0];  
+      this.car.position.lat = Number(this.arrayTrack[this.num_avanza].position.lat);
+      this.car.position.lng = Number(this.arrayTrack[this.num_avanza].position.lng);
     }
 
     const marker = new AdvancedMarkerElement({
       map: this.map,
-      position: this.position_car,
+      position: this.car.position,
       title: 'My Icon',
       content: imgIcon,
     });
-  
-    
-  
+
+    google.maps.event.addListener(marker, 'click', (event:any) => { 
+      this.getInfoMarker(event)
+    });
+
     let timeId = setInterval(() => {
       if(this.num_avanza >= maximo || !this.clear_auto ){ clearInterval(timeId); return }
       this.num_avanza++;
-      this.avanzarCar(marker);
-      marker.position = this.position_car;
+      this._movilService.infoCarFn(this.car)
+      this.avanzarCar();
+      marker.position = this.car.position;
     },1500);
-
-
-    
-      
-     
-
-      // google.maps.event.addListener(marker_car, 'click', (event:any) => { 
-      //   this.getInfoMarker(event)
-      // });
-    
-
-    // let timeId = setInterval(() => {
-    //   if(this.num_avanza >= maximo || this.clear_auto){ clearInterval(timeId); return }
-    //   if(this.center_car){
-    //     this.map.setCenter(this.position_car);
-    //     this.map.setZoom(18);
-    //   }
-    //   this.num_avanza++;
-    // },1500);
 
   }
 
-  avanzarCar(marker:any){
-    this.position_car.lat = Number(this.arrayTrack[this.num_avanza].position.lat);
-    this.position_car.lng = Number(this.arrayTrack[this.num_avanza].position.lng);
+  avanzarCar(){
+    this.car.patente = this.arrayTrack[this.num_avanza].patente;
+    this.car.velocidad = this.arrayTrack[this.num_avanza].speed.split(",")[0];
+    this.car.altitud = this.arrayTrack[this.num_avanza].altitude.split(",")[0];
+    this.car.position.lat = Number(this.arrayTrack[this.num_avanza].position.lat);
+    this.car.position.lng = Number(this.arrayTrack[this.num_avanza].position.lng);
 
     if(this.center_car){
-    this.map.setCenter(this.position_car);
+    this.map.setCenter(this.car.position);
     this.map.setZoom(18);
     }
   }
