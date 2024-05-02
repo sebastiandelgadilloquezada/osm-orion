@@ -33,9 +33,9 @@ export const routes: Routes = [
                   import('./pages/profile/profile.component').then((m) => m.ProfileComponent),
             },
             {
-                path: 'activity',
+                path: 'convoy/:id',
                 loadComponent: () =>
-                  import('./pages/activity/activity.component').then( (m) => m.ActivityComponent)
+                  import('./pages/convoy/convoy.component').then( (m) => m.ConvoyComponent)
             },
             {
                 path: '**',

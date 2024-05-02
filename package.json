@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --proxy-config proxy.conf.json",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
@@ -20,10 +20,13 @@
     "@angular/platform-browser-dynamic": "^17.0.0",
     "@angular/router": "^17.0.0",
     "@googlemaps/js-api-loader": "^1.16.6",
+    "@googlemaps/markerclusterer": "^2.5.3",
     "@ng-maps/core": "^6.0.1",
     "@ng-maps/google": "^6.0.0",
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.3",
+    "distance-matrix-2": "^1.1.0",
+    "google-distance-matrix": "^1.1.1",
     "jquery": "^3.7.1",
     "leaflet": "^1.9.4",
     "leaflet-search": "^4.0.0",

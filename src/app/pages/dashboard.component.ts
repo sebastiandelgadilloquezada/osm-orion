@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { SidebarComponent } from '../shared/sidebar/sidebar.component';
 import { EventsService } from '../services/events.service';
 import { MovilService } from '../services/movil.service';
@@ -25,12 +25,23 @@ export class DashboardComponent implements OnInit{
   public actMoviles: boolean = false;
   public playCar: boolean = false;
   public followCar: boolean = false;
+  public convoy : any= [];
+  public btn_convoy = false;
+  public genConvoy = false;
+  public title_moviles = 'Moviles'; 
 
-  constructor(private _eventService: EventsService, private _movilesServices: MovilService, private _tipoMovil: TypeMovilService){
+
+  constructor(
+    private _eventService: EventsService, 
+    private _movilesServices: MovilService, 
+    private _tipoMovil: TypeMovilService, 
+    public _router: Router,
+    public _movilService : MovilService
+  ){
 
   }
   ngOnInit(): void {
-    
+    this.title_moviles = 'Moviles';
   }
 
 
@@ -48,6 +59,12 @@ export class DashboardComponent implements OnInit{
       this.getMoviles();
       this.menu_collapse = !this.menu_collapse;
       this.actMoviles = !this.actMoviles;
+      // this.genConvoy = !this.genConvoy;
+      
+    }else if(menu == 'convoy'){
+      // this.getMoviles();
+      this.menu_collapse = !this.menu_collapse;
+      this.genConvoy = !this.genConvoy;
     }
   }
 
@@ -80,6 +97,29 @@ export class DashboardComponent implements OnInit{
 
   tipoMovil(patente:any){
     return this._tipoMovil.getTipoMovil(patente);
+  }
+
+  addConvoy(car:any){
+    console.log(car)
+    this.btn_convoy = true;
+    // 
+    this.convoy.push(car);
+  }
+
+  clickConvoy(){
+    this.title_moviles = 'Convoy';
+    this.followCar = !this.followCar;
+    for (let i = 0; i < this.convoy.length; i++) {
+      let index = this.moviles.indexOf(this.convoy[i]);
+      this.moviles.splice(index, 1) 
+    }
+    this.btn_convoy = false;
+    this.actMoviles = false;
+    this.genConvoy = true;
+    this._movilService.setConvoy(this.convoy);
+    this.getMoviles();
+    this._movilesServices.playConvoyFn(true);
+    this._router.navigate(['dashboard/convoy', 1]);
   }
 
 

@@ -9,6 +9,7 @@ import { TypeEventsService } from '../../services/type-events.service';
 import { MovilService } from '../../services/movil.service';
 import { Observable } from 'rxjs';
 import { TrackeoService } from '../../services/trackeo.service';
+import { MarkerClusterer } from "@googlemaps/markerclusterer";
 
 @Component({
   selector: 'app-home',
@@ -20,7 +21,7 @@ import { TrackeoService } from '../../services/trackeo.service';
 export class HomeComponent implements OnInit{
   public latitude : number;
   public longitude: number;
-  public markers: any = [];
+  private markers: google.maps.Marker[] = [];
   public center: google.maps.LatLngLiteral;
   public map: any;
   public position : any;
@@ -55,6 +56,7 @@ export class HomeComponent implements OnInit{
   public clear_auto = true;
   public center_car = true;
   private num_avanza = 0;
+  public stateModal = false;
 
   private loader = new Loader({
     apiKey: "AIzaSyCTkR3En4AT1HXqGZ5kgcTbJ24AoxzAd-A",
@@ -83,8 +85,7 @@ constructor(private locationService: CurrentLocationService,
             private _movilService: MovilService,
             private _trackService: TrackeoService){}
   
-async ngOnInit() {
-    
+async ngOnInit() {  
   const tracker = JSON.stringify(this._trackService.getTrack());
   this.arrayTrack = JSON.parse(tracker);
 
@@ -151,9 +152,11 @@ async ngOnInit() {
   }
 
   async inyectarMarker(data:any, tipo?: any){
+    
     for (let item in data) {
-      await this.clickMarker(data[item].position, tipo);
+      await this.clickMarker(data[item].position, tipo);      
     }
+   
   }
 
   async clickMarker(position:any, tipo? : any){
@@ -176,7 +179,7 @@ async ngOnInit() {
       title: 'My Icon',
       content: imgIcon,
     });
-
+  
      google.maps.event.addListener(marker, 'click', (event:any) => { 
       this.getInfoMarker(event)
     });
@@ -240,8 +243,6 @@ async ngOnInit() {
     let markSel :any;
 
     const miLoct:any = this.locationService.getMiPosition()[0];
-
-    console.log(marker.latLng.toJSON())
 
     if(miLoct.position.lat == Number(marca.lat) && miLoct.position.lng == Number(marca.lng)){
       markSel = miLoct;
@@ -338,7 +339,6 @@ async ngOnInit() {
       this.car.position.lng = Number(this.arrayTrack[0].position.lng);
 
     }else{
-      console.log(this.arrayTrack[this.num_avanza].speed.split(",")[0])
       this.car.patente = this.arrayTrack[this.num_avanza].patente;
       this.car.velocidad = this.arrayTrack[this.num_avanza].speed.split(",")[0];
       this.car.altitud = this.arrayTrack[this.num_avanza].altitude.split(",")[0];  
@@ -378,6 +378,15 @@ async ngOnInit() {
     this.map.setCenter(this.car.position);
     this.map.setZoom(18);
     }
+  }
+
+  modalFotos(){
+    this.stateModal = true;
+    this.actInfo = false;
+  }
+
+  cerrar_modal(){
+    this.stateModal = false;
   }
 
 }

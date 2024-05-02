@@ -1,17 +1,20 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map } from 'leaflet';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CurrentLocationService {
   apiKey = "AIzaSyCTkR3En4AT1HXqGZ5kgcTbJ24AoxzAd-A";
+  key_matrix = "AIzaSyD0SHnbHno-JbX8X2AP3F8Qs0K5iRG3TuY";
   public latLng = {
     lat: 0, 
     lng: 0
   }
-  constructor(private $http: HttpClient) { }
+
+  constructor(private $http: HttpClient) { 
+
+  }
 
   getPosition(): Promise<any> {
     return new Promise((resolve, reject) => {
@@ -45,6 +48,32 @@ export class CurrentLocationService {
 
   getDegeocode(latlng: any){
     return this.$http.get<any[]>('https://maps.googleapis.com/maps/api/geocode/json?latlng='+latlng+'&key='+this.apiKey);
+  }
+
+  getDistance(latOrigen:any, lngOrigen:any, latDestino:any, lngDestino:any){
+
+    var origin1 = new google.maps.LatLng(latOrigen,lngOrigen);
+    var destinationB = new google.maps.LatLng(latDestino, lngDestino);
+
+     return new Promise(resolve => {
+
+      var service = new google.maps.DistanceMatrixService();
+      service.getDistanceMatrix(
+        {
+          origins: [origin1],
+          destinations: [destinationB],
+          travelMode: google.maps.TravelMode.DRIVING,
+          unitSystem: google.maps.UnitSystem.METRIC,
+          avoidHighways: false,
+          avoidTolls: false,
+        }, callback);
+      
+      function callback(response:any, status:any) {
+        resolve(response)
+      }
+  
+     })    
+    
   }
 
 }

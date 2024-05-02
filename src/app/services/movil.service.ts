@@ -8,7 +8,9 @@ export class MovilService {
   @Output() followCarEM: EventEmitter<any> = new EventEmitter<any>();
   @Output() playCarEM: EventEmitter<any> = new EventEmitter<any>();
   @Output() infoCar: EventEmitter<any> = new EventEmitter<any>();
+  @Output() playConvoy: EventEmitter<any> = new EventEmitter<any>();
 
+  public convoy: any = [];
   public moviles = [
     {
       id: 1,
@@ -17,6 +19,7 @@ export class MovilService {
       patente: 'XJ5679',
       altitud: '89',
       velocidad: '0',
+      distancia: '0',
       position: {lat: -32.89747779558939, lng: -71.50375086435182},
       fecha: '24/04/2024 15:03',
       color: '#FFC300 ',
@@ -28,6 +31,7 @@ export class MovilService {
       tipo: 'm',
       patente: 'VPSN-43',
       velocidad: '60',
+      distancia: '0',
       position: {lat: -32.912439952763876, lng: -71.49518428700598},
       fecha: '24/04/2024 15:03',
       color: '#FFC300 ',
@@ -39,6 +43,7 @@ export class MovilService {
       tipo: 'm',
       patente: 'KKGG59',
       velocidad: '20',
+      distancia: '0',
       position: {lat: -32.93962488493326, lng: -71.48184064018372},
       fecha: '24/04/2024 15:03',
       color: '#FFC300 ',
@@ -50,6 +55,7 @@ export class MovilService {
       tipo: 'm',
       patente: 'PLMB-23',
       velocidad: '37',
+      distancia: '0',
       position: {lat: -32.98932691432597, lng: -71.52403902734706},
       fecha: '24/04/2024 15:03',
       color: '#FFC300 ',
@@ -61,6 +67,7 @@ export class MovilService {
       tipo: 'm',
       patente: 'JVBBCH-49',
       velocidad: '20',
+      distancia: '0',
       position: {lat: -32.93368712310296, lng: -71.53150652091033 },
       fecha: '24/04/2024 15:03',
       color: '#FFC300 ',
@@ -72,6 +79,7 @@ export class MovilService {
       title:'Auto',
       patente: 'JVXX-49',
       velocidad: '20',
+      distancia: '0',
       position: {lat: -32.96213832595877, lng: -71.52217304499663 },
       fecha: '24/04/2024 15:03',
       color: '#FFC300 ',
@@ -115,5 +123,18 @@ export class MovilService {
   infoCarFn(data: any){
     this.moviles[0] = data;
     this.infoCar.emit(data);
+  }
+
+  setConvoy(array:any){
+    console.log(array);
+    this.convoy = array;
+  }
+
+  playConvoyFn(state: boolean){
+    this.playConvoy.emit(state);
+  }
+
+  getConvoy(){
+    return this.convoy;
   }
 }

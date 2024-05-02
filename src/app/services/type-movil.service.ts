@@ -61,7 +61,6 @@ export class TypeMovilService {
     } 
 
     return tipo;
-
   }
 
 
