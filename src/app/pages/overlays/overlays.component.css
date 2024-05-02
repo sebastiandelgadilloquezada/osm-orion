@@ -1,0 +1,48 @@
+.map-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 10px;
+  }
+  
+  .map-frame {
+    border: 2px solid black;
+    height: 100%;
+  }
+  
+  #map {
+    width: 100%;
+    height: 100%;
+    border: solid 1px red;
+  }
+
+
+.inser_image{
+    position: absolute;
+    left: 50%;
+    top: 10px;
+    background-color: white;
+    z-index: 999;
+    padding: 10px;
+}
+
+.inser_image input{
+    margin: 5px;
+}
+
+.backgr{
+    background-color: white;
+    width: 350px;
+}
+
+.showButton{
+    height: 400px;
+    transition-duration: 1s;
+}
+
+.noneButton{
+    height: 0px;
+    transition-duration: 1s;
+}

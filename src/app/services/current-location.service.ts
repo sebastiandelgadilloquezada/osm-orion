@@ -5,8 +5,8 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class CurrentLocationService {
-  apiKey = "AIzaSyCTkR3En4AT1HXqGZ5kgcTbJ24AoxzAd-A";
-  key_matrix = "AIzaSyD0SHnbHno-JbX8X2AP3F8Qs0K5iRG3TuY";
+  apiKey = "AIzaSyDQcxcSX1BJHygKafP4FHBjj_cE68c-THs";
+  key_matrix = "AIzaSyDQcxcSX1BJHygKafP4FHBjj_cE68c-THs";
   public latLng = {
     lat: 0, 
     lng: 0

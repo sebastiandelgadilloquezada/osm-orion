@@ -37,9 +37,9 @@ export class DashboardComponent implements OnInit{
     private _tipoMovil: TypeMovilService, 
     public _router: Router,
     public _movilService : MovilService
-  ){
-
-  }
+  ){}
+  
+  
   ngOnInit(): void {
     this.title_moviles = 'Moviles';
   }

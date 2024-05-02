@@ -38,6 +38,11 @@ export const routes: Routes = [
                   import('./pages/convoy/convoy.component').then( (m) => m.ConvoyComponent)
             },
             {
+                path: 'overlays',
+                loadComponent: () =>
+                  import('./pages/overlays/overlays.component').then( (m) => m.OverlaysComponent)
+            },
+            {
                 path: '**',
                 redirectTo: 'notFound',
                 pathMatch: 'full',
