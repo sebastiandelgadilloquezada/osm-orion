@@ -59,7 +59,7 @@ export class HomeComponent implements OnInit{
   public stateModal = false;
 
   private loader = new Loader({
-    apiKey: "AIzaSyCTkR3En4AT1HXqGZ5kgcTbJ24AoxzAd-A",
+    apiKey: "AIzaSyDQcxcSX1BJHygKafP4FHBjj_cE68c-THs",
     version: "weekly",
   });
 
